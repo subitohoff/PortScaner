@@ -1,4 +1,4 @@
-from core.argument_parser import ArgumentParser
+from util.argument_parser import ArgumentParser
 
 
 def main():
