@@ -18,7 +18,8 @@ def main():
 
     if not args["port"] and not args["port_range"]:
         print(
-            "Error: No ports specified. Please provide a port with -p or a port range with -ps and -pe."
+            "Error: No ports specified. "
+            "Please provide a port with -p or a port range with -ps and -pe."
         )
         print("Use -h for help.")
         return
@@ -37,7 +38,7 @@ def main():
         print(f"  IPv6 Target: {args['ip_v6']}")
     if args["port"]:
         print(f"  Port: {args['port']}")
-    if args["port_range"]:
+    if args["port_range"] != (0, 0):
         print(f"  Port Range: {args['port_range'][0]}-{args['port_range'][1]}")
     if args["ping"]:
         print("  Ping: Enabled")

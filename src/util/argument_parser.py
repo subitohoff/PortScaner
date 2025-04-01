@@ -1,6 +1,6 @@
 import argparse
 import ipaddress
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 
 
 class ArgumentParser:
@@ -52,7 +52,7 @@ class ArgumentParser:
             "ip_v4": None,
             "ip_v6": None,
             "port": args.port,
-            "port_range": None,
+            "port_range": (0, 0),
             "ping": args.ping,
             "network_mask": args.network,
         }
