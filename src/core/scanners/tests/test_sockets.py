@@ -21,7 +21,10 @@ async def run():
     packet = pf.generate_packet(msg)
     sock: socket.socket
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
+    # we will provide our own headers
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
+    sock.bind(("127.0.0.1", src_port))
 
     recv_sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
 
