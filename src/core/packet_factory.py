@@ -1,7 +1,7 @@
 from struct import pack, unpack
 from socket import IPPROTO_TCP
 
-from core.scanners.headers import IPHeader, TCPHeader
+from core.headers import IPHeader, TCPHeader
 
 
 class PacketFactory:
@@ -28,7 +28,7 @@ class PacketFactory:
         length = tcp_hdr_len + usr_data_len
         return pack("!4s4sBBH", src_addr, dst_addr, placeholder, protocol, length)
 
-    def generate_packet(self, msg: bytes) -> bytes:
+    def generate_packet(self, msg: bytes = bytes()) -> bytes:
         self.tcp_header.check = 0
 
         tcp_hdr = self.tcp_header.get_header()

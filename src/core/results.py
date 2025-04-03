@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from ipaddress import IPv4Address, IPv6Address
 
@@ -17,6 +17,6 @@ class PingStatus:
 
 @dataclass
 class ScanResult:
-    port_status: dict[int, PortStatus] = {}
+    port_status: dict[int, PortStatus] = field(default_factory=dict)
     host: IPv4Address | IPv6Address = IPv4Address("0.0.0.0")
     ping_status: PingStatus = PingStatus(0, False)
