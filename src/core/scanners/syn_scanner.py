@@ -1,6 +1,7 @@
 from ipaddress import IPv4Address, IPv6Address
 from random import randint
 from struct import unpack
+from datetime import datetime
 import socket
 
 from core.scanners.scanner import Scanner
@@ -33,6 +34,9 @@ class SYNScanner(Scanner):
         return (
             tcp_hdr.tcp_syn == 1 and tcp_hdr.tcp_ack == 1 and tcp_hdr.ack_num == seq + 1
         )
+    
+    def is_packet_rst(self, tcp_hdr: TCPHeader) -> bool:
+        return tcp_hdr.tcp_rst == 1
 
     def icmp_error(self, packet: bytes) -> int:
         ip_hdr = IPHeader.from_bytes(packet[:IP_HDR_LEN])
@@ -69,10 +73,13 @@ class SYNScanner(Scanner):
 
         i = 0
         old_i = -1
+        listen_start: datetime
+
         while i < self.retries:
             if i != old_i:
                 print("Sending SYN")
                 sock.sendto(out_packet, (dst_ip_port[0], 0))
+                listen_start = datetime.now()
                 old_i = i
             try:
                 in_packet, in_addr = sock.recvfrom(65535)
@@ -82,9 +89,15 @@ class SYNScanner(Scanner):
                 i += 1
                 continue
 
+            # got timeout (w/ other packets in between)
+            if (datetime.now() - listen_start).seconds >= self.timeout:
+                i += 1
+                print("No response")
+                continue
+
             # idk how would that happen but ok
-            if in_addr[0] != self.src_ip:
-                print("Wrong response src ip")
+            if in_addr[0] != dst_ip_port[0]:
+                # print("Wrong response src ip")
                 continue
 
             icmp_res = self.icmp_error(in_packet)
@@ -101,12 +114,16 @@ class SYNScanner(Scanner):
                 print("Packet for another port")
                 continue
 
-            if not self.is_packet_syn_ack(tcp_hdr, seq):
-                print("Response different than SYN/ACK")
+            if self.is_packet_syn_ack(tcp_hdr, seq):
+                print("Received SYN/ACK")
+                return PortStatus.OPEN
+            
+            if self.is_packet_rst(tcp_hdr):
+                print("Received RST")
                 return PortStatus.CLOSED
 
-            print("Received SYN/ACK")
-            return PortStatus.OPEN
+            return PortStatus.CLOSED
+
 
         # no response after retransmissions
         return PortStatus.FILTERED
