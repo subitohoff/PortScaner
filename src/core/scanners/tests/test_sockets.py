@@ -3,7 +3,7 @@ from time import sleep
 import asyncio
 from struct import unpack
 
-from core.scanners.packet_factory import PacketFactory
+from core.packet_factory import PacketFactory
 
 
 async def run():
