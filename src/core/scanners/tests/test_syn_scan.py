@@ -1,7 +1,8 @@
 from ipaddress import IPv4Address
+from socket import gethostbyname
+
 from core.scanners.syn_scanner import SYNScanner
 from core.results import ScanResult, PortStatus
-from socket import gethostbyname
 
 
 scanner = SYNScanner()

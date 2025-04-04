@@ -34,7 +34,7 @@ class SYNScanner(Scanner):
         return (
             tcp_hdr.tcp_syn == 1 and tcp_hdr.tcp_ack == 1 and tcp_hdr.ack_num == seq + 1
         )
-    
+
     def is_packet_rst(self, tcp_hdr: TCPHeader) -> bool:
         return tcp_hdr.tcp_rst == 1
 
@@ -117,13 +117,12 @@ class SYNScanner(Scanner):
             if self.is_packet_syn_ack(tcp_hdr, seq):
                 print("Received SYN/ACK")
                 return PortStatus.OPEN
-            
+
             if self.is_packet_rst(tcp_hdr):
                 print("Received RST")
                 return PortStatus.CLOSED
 
             return PortStatus.CLOSED
-
 
         # no response after retransmissions
         return PortStatus.FILTERED
