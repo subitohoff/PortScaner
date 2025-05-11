@@ -67,16 +67,14 @@ class ScanManager:
     def _scan_single_threaded(self):
         scanner = self._create_scanner()
         pinger = Pinger()
-
         for host in self.target_hosts:
-            res = ScanResult()
-
+            res = ScanResult(host=host)
             if self.ping:
                 res.ping_status = pinger.ping(host)
-
+                print(f"Ping status for {host}: {res.ping_status.success}")  # Debug
             if (not self.ping) or res.ping_status.success:
-                res = scanner.scan(host, self.target_ports)
-
+                port_result = scanner.scan(host, self.target_ports)
+                res.port_status = port_result.port_status
             self.results.append(res)
 
     async def _scanner_thread(
@@ -84,20 +82,15 @@ class ScanManager:
     ) -> list[ScanResult]:
         scanner = self._create_scanner()
         pinger = Pinger()
-
         results: list[ScanResult] = []
-
         for host in hosts:
-            res = ScanResult()
-
+            res = ScanResult(host=host)
             if self.ping:
                 res.ping_status = pinger.ping(host)
-
             if (not self.ping) or res.ping_status.success:
-                res = scanner.scan(host, ports)
-
+                port_result = scanner.scan(host, ports)
+                res.port_status = port_result.port_status
             results.append(res)
-
         return results
 
     def _chunkify(self, lst: list, chunks: int) -> list[list]:
@@ -127,3 +120,4 @@ class ScanManager:
 
         stop_time = datetime.now()
         self.scan_time = stop_time - start_time
+
