@@ -120,4 +120,3 @@ class ScanManager:
 
         stop_time = datetime.now()
         self.scan_time = stop_time - start_time
-
