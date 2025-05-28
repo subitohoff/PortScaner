@@ -23,8 +23,9 @@ class ArgumentParser:
         )
         self._parser.add_argument("-ip", type=str, help="IPv4 address target")
         self._parser.add_argument("-ipv6", type=str, help="IPv6 address target")
+        self._parser.add_argument("-d", "--domain", type=str, help="Target domain name")
         self._parser.add_argument(
-            "-p", "--port", type=int, help="Specific port to scan"
+            "-p", "--port", type=str, help="Specific port to scan"
         )
         self._parser.add_argument(
             "-ps", "--port-start", type=int, help="Start of port range"
@@ -51,6 +52,7 @@ class ArgumentParser:
             "scanner_stealth": args.scanner_stealth,
             "ip_v4": None,
             "ip_v6": None,
+            "domain": args.domain,
             "port": args.port,
             "port_range": (0, 0),
             "ping": args.ping,

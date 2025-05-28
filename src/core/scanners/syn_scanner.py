@@ -77,7 +77,7 @@ class SYNScanner(Scanner):
 
         while i < self.retries:
             if i != old_i:
-                print("Sending SYN")
+                # print("Sending SYN")
                 sock.sendto(out_packet, (dst_ip_port[0], 0))
                 listen_start = datetime.now()
                 old_i = i
@@ -85,14 +85,14 @@ class SYNScanner(Scanner):
                 in_packet, in_addr = sock.recvfrom(65535)
             except socket.error:
                 # no response
-                print("No response")
+                # print("No response")
                 i += 1
                 continue
 
             # got timeout (w/ other packets in between)
             if (datetime.now() - listen_start).seconds >= self.timeout:
                 i += 1
-                print("No response")
+                # print("No response")
                 continue
 
             # idk how would that happen but ok
@@ -111,15 +111,15 @@ class SYNScanner(Scanner):
             _, tcp_hdr = unpack_headers(in_packet)
 
             if not self.is_packet_for_us(tcp_hdr, src_port, dst_ip_port[1]):
-                print("Packet for another port")
+                # print("Packet for another port")
                 continue
 
             if self.is_packet_syn_ack(tcp_hdr, seq):
-                print("Received SYN/ACK")
+                # print("Received SYN/ACK")
                 return PortStatus.OPEN
 
             if self.is_packet_rst(tcp_hdr):
-                print("Received RST")
+                # print("Received RST")
                 return PortStatus.CLOSED
 
             return PortStatus.CLOSED
@@ -156,7 +156,7 @@ class SYNScanner(Scanner):
             # send RST
             pf.tcp_header.tcp_rst = 1
             out_packet = pf.generate_packet()
-            print("Sending RST")
+            # print("Sending RST")
             sock.sendto(out_packet, (str(host), 0))
 
             port_status[port] = PortStatus.OPEN
