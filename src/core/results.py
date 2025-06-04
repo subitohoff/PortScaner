@@ -24,10 +24,11 @@ class ScanResult:
     port_status: dict[int, PortStatus] = field(default_factory=dict)
     host: IPv4Address | IPv6Address = IPv4Address("0.0.0.0")
     ping_status: PingStatus = field(default_factory=default_ping_status)
+    ping_enabled: bool = False
 
     def __str__(self):
         result = f"Host: {self.host}"
-        if self.ping_status:
+        if self.ping_status and self.ping_enabled:
             result += f"\nPing: {'Success' if self.ping_status.success else 'Failed'}"
             if self.ping_status.success:
                 result += f" ({self.ping_status.delay_ms}ms)"

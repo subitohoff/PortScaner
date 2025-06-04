@@ -71,7 +71,7 @@ class ScanManager:
             res = ScanResult(host=host)
             if self.ping:
                 res.ping_status = pinger.ping(host)
-                print(f"Ping status for {host}: {res.ping_status.success}")  # Debug
+                res.ping_enabled = True
             if (not self.ping) or res.ping_status.success:
                 port_result = scanner.scan(host, self.target_ports)
                 res.port_status = port_result.port_status
@@ -87,6 +87,7 @@ class ScanManager:
             res = ScanResult(host=host)
             if self.ping:
                 res.ping_status = pinger.ping(host)
+                res.ping_enabled = True
             if (not self.ping) or res.ping_status.success:
                 port_result = scanner.scan(host, ports)
                 res.port_status = port_result.port_status
